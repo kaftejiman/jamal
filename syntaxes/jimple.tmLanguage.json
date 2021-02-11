@@ -1,0 +1,1293 @@
+{
+  "scopeName": "source.jimple",
+  "name": "soot",
+  "fileTypes": [
+    "jimple",
+    "grimple"
+  ],
+  "patterns": [
+    {
+      "include": "#comments-javadoc"
+    },
+    {
+      "include": "#code"
+    }
+  ],
+  "repository": {
+    "all-types": {
+      "patterns": [
+        {
+          "include": "#primitive-arrays"
+        },
+        {
+          "include": "#primitive-types"
+        },
+        {
+          "include": "#object-types"
+        }
+      ]
+    },
+    "annotations": {
+      "patterns": [
+        {
+          "begin": "((@)\\s*([^\\s(]+))(\\()",
+          "beginCaptures": {
+            "2": {
+              "name": "punctuation.definition.annotation.jimple"
+            },
+            "3": {
+              "name": "storage.type.annotation.jimple"
+            },
+            "4": {
+              "name": "punctuation.definition.annotation-arguments.begin.bracket.round.jimple"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.annotation-arguments.end.bracket.round.jimple"
+            }
+          },
+          "name": "meta.declaration.annotation.jimple",
+          "patterns": [
+            {
+              "captures": {
+                "1": {
+                  "name": "constant.other.key.jimple"
+                },
+                "2": {
+                  "name": "keyword.operator.assignment.jimple"
+                }
+              },
+              "match": "(\\w*)\\s*(=)"
+            },
+            {
+              "include": "#code"
+            }
+          ]
+        },
+        {
+          "match": "((@)(\\w*)(\\:|\\;)*(.*)\\;)",
+          "name": "meta.special.parameter.jimple",
+          "captures": {
+            "3": {
+              "name": "constant.language.jimple"
+            },
+            "5": {
+              "name": "storage.type.jimple"
+            }
+          }
+        },
+        {
+          "match": "\\s((special|virtual|interface|static|dynamic)invoke)\\s",
+          "name": "entity.name.function.jimple"
+        }
+      ]
+    },
+    "class": {
+      "begin": "(?=\\w?[\\w\\s-]*\\b(?:class|(?<!@)interface|enum)\\s+[\\w$]+)",
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.class.end.bracket.curly.jimple"
+        }
+      },
+      "name": "meta.class.jimple",
+      "patterns": [
+        {
+          "include": "#storage-modifiers"
+        },
+        {
+          "include": "#generics"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "storage.modifier.jimple"
+            },
+            "2": {
+              "name": "entity.name.type.class.jimple"
+            }
+          },
+          "match": "(class|(?<!@)interface|enum)\\s+([\\w$]+)",
+          "name": "meta.class.identifier.jimple"
+        },
+        {
+          "begin": "extends",
+          "beginCaptures": {
+            "0": {
+              "name": "storage.modifier.extends.jimple"
+            }
+          },
+          "end": "(?={|implements|permits|)",
+          "name": "meta.definition.class.inherited.classes.jimple",
+          "patterns": [
+            {
+              "include": "#object-types-inherited"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "begin": "(implements)\\s",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.modifier.implements.jimple"
+            }
+          },
+          "end": "(?=\\s*extends|permits|\\{)",
+          "name": "meta.definition.class.implemented.interfaces.jimple",
+          "patterns": [
+            {
+              "include": "#object-types-inherited"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "begin": "(permits)\\s",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.modifier.permits.jimple"
+            }
+          },
+          "end": "(?=\\s*extends|implements|\\{)",
+          "name": "meta.definition.class.permits.classes.jimple",
+          "patterns": [
+            {
+              "include": "#object-types-inherited"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "begin": "{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.class.begin.bracket.curly.jimple"
+            }
+          },
+          "end": "(?=})",
+          "contentName": "meta.class.body.jimple",
+          "patterns": [
+            {
+              "include": "#class-body"
+            }
+          ]
+        }
+      ]
+    },
+    "class-body": {
+      "patterns": [
+        {
+          "include": "#comments-javadoc"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#enums"
+        },
+        {
+          "include": "#class"
+        },
+        {
+          "include": "#generics"
+        },
+        {
+          "include": "#static-initializer"
+        },
+        {
+          "include": "#class-fields-and-methods"
+        },
+        {
+          "include": "#annotations"
+        },
+        {
+          "include": "#storage-modifiers"
+        },
+        {
+          "include": "#member-variables"
+        },
+        {
+          "include": "#code"
+        }
+      ]
+    },
+    "class-fields-and-methods": {
+      "patterns": [
+        {
+          "begin": "(?=\\=)",
+          "end": "(?=;)",
+          "patterns": [
+            {
+              "include": "#code"
+            }
+          ]
+        },
+        {
+          "include": "#methods"
+        }
+      ]
+    },
+    "code": {
+      "patterns": [
+        {
+          "include": "#annotations"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#enums"
+        },
+        {
+          "include": "#class"
+        },
+        {
+          "include": "#record"
+        },
+        {
+          "include": "#anonymous-block-and-instance-initializer"
+        },
+        {
+          "include": "#try-catch-finally"
+        },
+        {
+          "include": "#assertions"
+        },
+        {
+          "include": "#parens"
+        },
+        {
+          "include": "#constants-and-special-vars"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#anonymous-classes-and-new"
+        },
+        {
+          "include": "#lambda-expression"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#storage-modifiers"
+        },
+        {
+          "include": "#method-call"
+        },
+        {
+          "include": "#function-call"
+        },
+        {
+          "include": "#variables"
+        },
+        {
+          "include": "#variables-local"
+        },
+        {
+          "include": "#objects"
+        },
+        {
+          "include": "#properties"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#all-types"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.delimiter.jimple"
+        },
+        {
+          "match": "\\.",
+          "name": "punctuation.separator.period.jimple"
+        },
+        {
+          "match": ";",
+          "name": "punctuation.terminator.jimple"
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.jimple"
+            }
+          },
+          "match": "/\\*\\*/",
+          "name": "comment.block.empty.jimple"
+        },
+        {
+          "include": "#comments-inline"
+        }
+      ]
+    },
+    "comments-inline": {
+      "patterns": [
+        {
+          "begin": "/\\*",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.jimple"
+            }
+          },
+          "end": "\\*/",
+          "name": "comment.block.jimple"
+        },
+        {
+          "begin": "(^[ \\t]+)?(?=//)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.jimple"
+            }
+          },
+          "end": "(?!\\G)",
+          "patterns": [
+            {
+              "begin": "//",
+              "beginCaptures": {
+                "0": {
+                  "name": "punctuation.definition.comment.jimple"
+                }
+              },
+              "end": "\\n",
+              "name": "comment.line.double-slash.jimple"
+            }
+          ]
+        }
+      ]
+    },
+    "comments-javadoc": {
+      "patterns": [
+        {
+          "begin": "^\\s*(/\\*\\*)(?!/)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.comment.jimple"
+            }
+          },
+          "end": "\\*/",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.jimple"
+            }
+          },
+          "name": "comment.block.jimpledoc.jimple",
+          "patterns": [
+            {
+              "match": "@(author|deprecated|return|see|serial|since|version)\\b",
+              "name": "keyword.other.documentation.jimpledoc.jimple"
+            },
+            {
+              "match": "(@param)\\s+(\\S+)",
+              "captures": {
+                "1": {
+                  "name": "keyword.other.documentation.jimpledoc.jimple"
+                },
+                "2": {
+                  "name": "variable.parameter.jimple"
+                }
+              }
+            },
+            {
+              "match": "(@(?:exception|throws))\\s+(\\S+)",
+              "captures": {
+                "1": {
+                  "name": "keyword.other.documentation.jimpledoc.jimple"
+                },
+                "2": {
+                  "name": "entity.name.type.class.jimple"
+                }
+              }
+            },
+            {
+              "match": "{(@link)\\s+(\\S+)?#([\\w$]+\\s*\\([^\\(\\)]*\\)).*?}",
+              "captures": {
+                "1": {
+                  "name": "keyword.other.documentation.jimpledoc.jimple"
+                },
+                "2": {
+                  "name": "entity.name.type.class.jimple"
+                },
+                "3": {
+                  "name": "variable.parameter.jimple"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "constants-and-special-vars": {
+      "patterns": [
+        {
+          "match": "\\b(true|false|null)\\b",
+          "name": "constant.language.jimple"
+        },
+        {
+          "match": "\\bthis\\b",
+          "name": "variable.language.this.jimple"
+        },
+        {
+          "match": "\\bsuper\\b",
+          "name": "variable.language.jimple"
+        },
+        {
+          "match": "\\bgoto\\b",
+          "name": "variable.language.jimple"
+        },
+        {
+          "match": "\\blabel[1-9]{1,2};?(\\b)?",
+          "name": "variable.language.jimple"
+        },
+        {
+          "match": "\\bcatch\\b",
+          "name": "keyword.control.catch.jimple"
+        },
+        {
+          "match": "\\bfrom\\b",
+          "name": "keyword.control.catch.jimple"
+        },
+        {
+          "match": "\\bto\\b",
+          "name": "keyword.control.catch.jimple"
+        },
+        {
+          "match": "\\bwith\\b",
+          "name": "keyword.control.catch.jimple"
+        },
+        {
+          "match": "\\$[a-z0-9]{1,3}",
+          "name": "constant.language.jimple"
+        }        
+      ]
+    },
+    "enums": {
+      "begin": "^\\s*([\\w\\s]*)(enum)\\s+(\\w+)",
+      "beginCaptures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#storage-modifiers"
+            }
+          ]
+        },
+        "2": {
+          "name": "storage.modifier.jimple"
+        },
+        "3": {
+          "name": "entity.name.type.enum.jimple"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.enum.end.bracket.curly.jimple"
+        }
+      },
+      "name": "meta.enum.jimple",
+      "patterns": [
+        {
+          "begin": "\\b(extends)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.modifier.extends.jimple"
+            }
+          },
+          "end": "(?={|\\bimplements\\b)",
+          "name": "meta.definition.class.inherited.classes.jimple",
+          "patterns": [
+            {
+              "include": "#object-types-inherited"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "begin": "\\b(implements)\\b",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.modifier.implements.jimple"
+            }
+          },
+          "end": "(?={|\\bextends\\b)",
+          "name": "meta.definition.class.implemented.interfaces.jimple",
+          "patterns": [
+            {
+              "include": "#object-types-inherited"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "begin": "{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.enum.begin.bracket.curly.jimple"
+            }
+          },
+          "end": "(?=})",
+          "patterns": [
+            {
+              "begin": "(?<={)",
+              "end": "(?=;|})",
+              "patterns": [
+                {
+                  "include": "#comments-javadoc"
+                },
+                {
+                  "include": "#comments"
+                },
+                {
+                  "begin": "\\b(\\w+)\\b",
+                  "beginCaptures": {
+                    "1": {
+                      "name": "constant.other.enum.jimple"
+                    }
+                  },
+                  "end": "(,)|(?=;|})",
+                  "endCaptures": {
+                    "1": {
+                      "name": "punctuation.separator.delimiter.jimple"
+                    }
+                  },
+                  "patterns": [
+                    {
+                      "include": "#comments-javadoc"
+                    },
+                    {
+                      "include": "#comments"
+                    },
+                    {
+                      "begin": "\\(",
+                      "beginCaptures": {
+                        "0": {
+                          "name": "punctuation.bracket.round.jimple"
+                        }
+                      },
+                      "end": "\\)",
+                      "endCaptures": {
+                        "0": {
+                          "name": "punctuation.bracket.round.jimple"
+                        }
+                      },
+                      "patterns": [
+                        {
+                          "include": "#code"
+                        }
+                      ]
+                    },
+                    {
+                      "begin": "{",
+                      "beginCaptures": {
+                        "0": {
+                          "name": "punctuation.bracket.curly.jimple"
+                        }
+                      },
+                      "end": "}",
+                      "endCaptures": {
+                        "0": {
+                          "name": "punctuation.bracket.curly.jimple"
+                        }
+                      },
+                      "patterns": [
+                        {
+                          "include": "#class-body"
+                        }
+                      ]
+                    },
+                    {
+                      "begin": "<",
+                      "beginCaptures": {
+                        "0": {
+                          "name": "punctuation.bracket.lt.jimple"
+                        }
+                      },
+                      "end": ">",
+                      "endCaptures": {
+                        "0": {
+                          "name": "punctuation.bracket.gt.jimple"
+                        }
+                      },
+                      "patterns": [
+                        {
+                          "include": "#class-body"
+                        }
+                      ]
+                    }                    
+                  ]
+                }
+              ]
+            },
+            {
+              "include": "#class-body"
+            }
+          ]
+        }
+      ]
+    },
+    "function-call": {
+      "begin": "([A-Za-z_$][\\w$]*)\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function.jimple"
+        },
+        "2": {
+          "name": "punctuation.definition.parameters.begin.bracket.round.jimple"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.end.bracket.round.jimple"
+        }
+      },
+      "name": "meta.function-call.jimple",
+      "patterns": [
+        {
+          "include": "#code"
+        }
+      ]
+    },
+    "generics": {
+      "begin": "<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.bracket.angle.jimple"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.bracket.angle.jimple"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\\b(extends|super)\\b",
+          "name": "storage.modifier.$1.jimple"
+        },
+        {
+          "match": "(?<!\\.)([a-zA-Z\\$_][a-zA-Z0-9$_]*)(?=\\s*<)",
+          "captures": {
+            "1": {
+              "name": "storage.type.jimple"
+            }
+          }
+        },
+        {
+          "include": "#primitive-arrays"
+        },
+        {
+          "match": "[a-zA-Z$_][a-zA-Z0-9$_]*",
+          "name": "storage.type.generic.jimple"
+        },
+        {
+          "match": "\\?",
+          "name": "storage.type.generic.wildcard.jimple"
+        },
+        {
+          "match": "&",
+          "name": "punctuation.separator.types.jimple"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.delimiter.jimple"
+        },
+        {
+          "match": "\\.",
+          "name": "punctuation.separator.period.jimple"
+        },
+        {
+          "include": "#parens"
+        },
+        {
+          "include": "#generics"
+        },
+        {
+          "include": "#comments"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "\\bthrow\\b",
+          "name": "keyword.control.throw.jimple"
+		},
+		{
+			"match": "\\bthrows\\b",
+			"name": "keyword.control.throw.jimple"
+		},
+        {
+          "match": "\\bcatch\\b",
+          "name": "keyword.control.catch.jimple"
+        },
+        {
+          "match": "\\bfrom\\b",
+          "name": "keyword.control.from.jimple"
+        },
+        {
+          "match": "\\bto\\b",
+          "name": "keyword.control.to.jimple"
+        },
+        {
+          "match": "\\bwith\\b",
+          "name": "keyword.control.with.jimple"
+        },
+        {
+          "match": "\\b(return|yield)\\b",
+          "name": "keyword.control.jimple"
+        },
+        {
+          "match": "\\b(instanceof)\\b",
+          "name": "keyword.operator.instanceof.jimple"
+        },
+        {
+          "match": "(<<|>>>?|~|\\^)",
+          "name": "keyword.operator.bitwise.jimple"
+        },
+        {
+          "match": "((&|\\^|\\||<<|>>>?)=)",
+          "name": "keyword.operator.assignment.bitwise.jimple"
+        },
+        {
+          "match": "(===?|!=|<=|>=|<>|<|>)",
+          "name": "keyword.operator.comparison.jimple"
+        },
+        {
+          "match": "([+*/%-]=)",
+          "name": "keyword.operator.assignment.arithmetic.jimple"
+        },
+        {
+          "match": "(=)",
+          "name": "keyword.operator.assignment.jimple"
+        },
+        {
+          "match": "(\\:=)",
+          "name": "keyword.operator.assignment.jimple"
+        },
+        {
+          "match": "(\\-\\-|\\+\\+)",
+          "name": "keyword.operator.increment-decrement.jimple"
+        },
+        {
+          "match": "(\\-|\\+|\\*|\\/|%)",
+          "name": "keyword.operator.arithmetic.jimple"
+        },
+        {
+          "match": "(!|&&|\\|\\|)",
+          "name": "keyword.operator.logical.jimple"
+        },
+        {
+          "match": "(\\||&)",
+          "name": "keyword.operator.bitwise.jimple"
+        },
+        {
+          "match": "\\b(const|goto)\\b",
+          "name": "keyword.reserved.jimple"
+        }
+      ]
+    },
+    "member-variables": {
+      "begin": "(?=private|protected|public|native|synchronized|abstract|threadsafe|transient|static|final)",
+      "end": "(?=\\=|;)",
+      "patterns": [
+        {
+          "include": "#storage-modifiers"
+        },
+        {
+          "include": "#variables"
+        },
+        {
+          "include": "#primitive-arrays"
+        },
+        {
+          "include": "#object-types"
+        }
+      ]
+    },
+    "method-call": {
+      "begin": "(\\.)\\s*([A-Za-z_$][\\w$]*)\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.separator.period.jimple"
+        },
+        "2": {
+          "name": "entity.name.function.jimple"
+        },
+        "3": {
+          "name": "punctuation.definition.parameters.begin.bracket.round.jimple"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.end.bracket.round.jimple"
+        }
+      },
+      "name": "meta.method-call.jimple",
+      "patterns": [
+        {
+          "include": "#code"
+        }
+      ]
+    },
+    "methods": {
+      "begin": "(?!new)(?=[\\w<].*\\s+)(?=([^=/]|/(?!/))+\\()(.*)",
+      "end": "(})|(?=;)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.section.method.end.bracket.curly.jimple"
+        }
+      },
+      "name": "meta.method.jimple",
+      "patterns": [
+        {
+          "include": "#storage-modifiers"
+        },
+        {
+          "begin": "(\\w+)\\s*(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "entity.name.function.jimple"
+            },
+            "2": {
+              "name": "punctuation.definition.parameters.begin.bracket.round.jimple"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.parameters.end.bracket.round.jimple"
+            }
+          },
+          "name": "meta.method.identifier.jimple",
+          "patterns": [
+            {
+              "include": "#parameters"
+            },
+            {
+              "include": "#parens"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "include": "#generics"
+        },
+        {
+          "begin": "(?=\\w.*\\s+\\w+\\s*\\()",
+          "end": "(?=\\s+\\w+\\s*\\()",
+          "name": "meta.method.return-type.jimple",
+          "patterns": [
+            {
+              "include": "#all-types"
+            },
+            {
+              "include": "#parens"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        },
+        {
+          "include": "#throws"
+        },
+        {
+          "begin": "{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.method.begin.bracket.curly.jimple"
+            }
+          },
+          "end": "(?=})",
+          "contentName": "meta.method.body.jimple",
+          "patterns": [
+            {
+              "include": "#code"
+            }
+          ]
+        },
+        {
+          "include": "#comments"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "match": "(?x)\n\\b(?<!\\$)\n0(x|X)\n(\n  (?<!\\.)[0-9a-fA-F]([0-9a-fA-F_]*[0-9a-fA-F])?[Ll]?(?!\\.)\n  |\n  (\n    [0-9a-fA-F]([0-9a-fA-F_]*[0-9a-fA-F])?\\.?\n    |\n    ([0-9a-fA-F]([0-9a-fA-F_]*[0-9a-fA-F])?)?\\.[0-9a-fA-F]([0-9a-fA-F_]*[0-9a-fA-F])?\n  )\n  [Pp][+-]?[0-9]([0-9_]*[0-9])?[FfDd]?\n)\n\\b(?!\\$)",
+          "name": "constant.numeric.hex.jimple"
+        },
+        {
+          "match": "\\b(?<!\\$)0(b|B)[01]([01_]*[01])?[Ll]?\\b(?!\\$)",
+          "name": "constant.numeric.binary.jimple"
+        },
+        {
+          "match": "\\b(?<!\\$)0[0-7]([0-7_]*[0-7])?[Ll]?\\b(?!\\$)",
+          "name": "constant.numeric.octal.jimple"
+        },
+        {
+          "match": "(?x)\n(?<!\\$)\n(\n  \\b[0-9]([0-9_]*[0-9])?\\.\\B(?!\\.)\n  |\n  \\b[0-9]([0-9_]*[0-9])?\\.([Ee][+-]?[0-9]([0-9_]*[0-9])?)[FfDd]?\\b\n  |\n  \\b[0-9]([0-9_]*[0-9])?\\.([Ee][+-]?[0-9]([0-9_]*[0-9])?)?[FfDd]\\b\n  |\n  \\b[0-9]([0-9_]*[0-9])?\\.([0-9]([0-9_]*[0-9])?)([Ee][+-]?[0-9]([0-9_]*[0-9])?)?[FfDd]?\\b\n  |\n  (?<!\\.)\\B\\.[0-9]([0-9_]*[0-9])?([Ee][+-]?[0-9]([0-9_]*[0-9])?)?[FfDd]?\\b\n  |\n  \\b[0-9]([0-9_]*[0-9])?([Ee][+-]?[0-9]([0-9_]*[0-9])?)[FfDd]?\\b\n  |\n  \\b[0-9]([0-9_]*[0-9])?([Ee][+-]?[0-9]([0-9_]*[0-9])?)?[FfDd]\\b\n  |\n  \\b(0|[1-9]([0-9_]*[0-9])?)(?!\\.)[Ll]?\\b\n)\n(?!\\$)",
+          "name": "constant.numeric.decimal.jimple"
+        }
+      ]
+    },
+    "object-types": {
+      "patterns": [
+        {
+          "include": "#generics"
+        },
+        {
+          "begin": "\\b((?:[A-Za-z_\\$]\\w*\\s*\\.\\s*)*)([A-Z_]\\w*)\\s*(?=\\[)",
+          "beginCaptures": {
+            "1": {
+              "patterns": [
+                {
+                  "match": "[A-Za-z_\\$]\\w*",
+                  "name": "storage.type.jimple"
+                },
+                {
+                  "match": "\\.",
+                  "name": "punctuation.separator.period.jimple"
+                }
+              ]
+            },
+            "2": {
+              "name": "storage.type.object.array.jimple"
+            }
+          },
+          "end": "(?!\\s*\\[)",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#parens"
+            }
+          ]
+        },
+        {
+          "match": "\\b((?:[A-Za-z_$]\\w*\\s*\\.\\s*)*[A-Z_]\\w*)\\s*(?=<)",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "match": "[A-Za-z_\\$]\\w*",
+                  "name": "storage.type.jimple"
+                },
+                {
+                  "match": "\\.",
+                  "name": "punctuation.separator.period.jimple"
+				},
+                {
+					"match": "\\$",
+					"name": "punctuation.separator.dollarsign.jimple"
+				}				
+              ]
+            }
+          }
+        },
+        {
+          "match": "\\b((?:[A-Za-z_]\\w*\\s*\\.\\s*)*[A-Z_]\\w*)\\b((?=\\s*[A-Za-z$_\\n])|(?=\\s*\\.\\.\\.))",
+          "captures": {
+            "1": {
+              "patterns": [
+                {
+                  "match": "[A-Za-z_\\$]\\w*",
+                  "name": "storage.type.jimple"
+                },
+                {
+                  "match": "\\.",
+                  "name": "punctuation.separator.period.jimple"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "object-types-inherited": {
+      "patterns": [
+        {
+          "include": "#generics"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.delimiter.jimple"
+        }
+      ]
+    },
+    "parameters": {
+      "patterns": [
+        {
+          "match": "\\bfinal\\b",
+          "name": "storage.modifier.jimple"
+        },
+        {
+          "include": "#annotations"
+        },
+        {
+          "include": "#all-types"
+        },
+        {
+          "include": "#strings"
+        },
+        {
+          "match": "\\w+",
+          "name": "variable.parameter.jimple"
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.delimiter.jimple"
+        },
+        {
+          "match": "\\.\\.\\.",
+          "name": "punctuation.definition.parameters.varargs.jimple"
+        }
+      ]
+    },
+    "parens": {
+      "patterns": [
+        {
+          "begin": "\\(",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.bracket.round.jimple"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.bracket.round.jimple"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#code"
+            }
+          ]
+        },
+        {
+          "begin": "\\[",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.bracket.square.jimple"
+            }
+          },
+          "end": "\\]",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.bracket.square.jimple"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#code"
+            }
+          ]
+        },
+        {
+          "begin": "{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.bracket.curly.jimple"
+            }
+          },
+          "end": "}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.bracket.curly.jimple"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#code"
+            }
+          ]
+        }
+      ]
+    },
+    "primitive-arrays": {
+      "patterns": [
+        {
+          "begin": "\\b(void|boolean|byte|char|short|int|float|long|double)\\b\\s*(?=\\[)",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.type.primitive.array.jimple"
+            }
+          },
+          "end": "(?!\\s*\\[)",
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#parens"
+            }
+          ]
+        }
+      ]
+    },
+    "primitive-types": {
+      "match": "\\b(void|boolean|byte|char|short|int|float|long|double)\\b",
+      "name": "storage.type.primitive.jimple"
+    },
+    "properties": {
+      "patterns": [
+        {
+          "match": "(<)*\\s*([a-zA-Z_$][\\w$]*)(?=\\s*\\.\\s*[a-zA-Z_$][\\w$]*)",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.period.jimple"
+            },
+            "2": {
+              "name": "storage.type.other.jimple"
+            }
+          }
+        },
+        {
+          "match": "(\\.)\\s*([a-zA-Z_$][\\w$]*)",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.period.jimple"
+            },
+            "2": {
+              "name": "storage.type.other.jimple"
+            }
+          }
+        },
+        {
+          "match": "(\\.)\\s*([0-9][\\w$]*)",
+          "captures": {
+            "1": {
+              "name": "punctuation.separator.period.jimple"
+            },
+            "2": {
+              "name": "invalid.illegal.identifier.jimple"
+            }
+          }
+        }
+      ]
+    },
+    "storage-modifiers": {
+      "match": "\\b(void|public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient|volatile|default|strictfp|sealed|non-sealed)\\b",
+      "name": "storage.modifier.jimple"
+    },
+    "strings": {
+      "patterns": [
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.jimple"
+            }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.jimple"
+            }
+          },
+          "name": "string.quoted.double.jimple",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.jimple"
+            }
+          ]
+        },
+        {
+          "begin": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.jimple"
+            }
+          },
+          "end": "'",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.jimple"
+            }
+          },
+          "name": "string.quoted.single.jimple",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.jimple"
+            }
+          ]
+        }
+      ]
+    },
+    "variables": {
+		"begin": "(?x)\n(?=\n  \\b\n  (\n    (void|boolean|byte|char|short|int|float|long|double)\n    |\n    (?>(\\w+\\.)*[A-Z_]+\\w*) # e.g. `javax.ws.rs.Response`, or `String`\n  )\n  \\b\n  \\s*\n  (\n    <[\\w<>,\\.?\\s\\[\\]]*> # e.g. `HashMap<Integer, String>`, or `List<java.lang.String>`\n  )?\n  \\s*\n  (\n    (\\[\\])* # int[][]\n  )?\n  \\s+\n  [A-Za-z_$][\\w$]* # At least one identifier after space\n  ([\\w\\[\\],$][\\w\\[\\],\\s]*)? # possibly primitive array or additional identifiers\n  \\s*(=|:|;)\n)",
+		"end": "(?=\\=|:|;)",
+		"name": "meta.definition.variable.jimple",
+		"patterns": [
+		  {
+			"match": "([A-Za-z$_][\\w$]*)(?=\\s*(\\[\\])*\\s*(:|=|,))",
+			"captures": {
+			  "1": {
+				"name": "variable.other.definition.jimple"
+			  }
+			}
+		  },
+		  {
+			"include": "#all-types"
+		  },
+		  {
+			"include": "#code"
+		  }
+		]
+	  },
+    "variables-local": {
+      "begin": "(?=\\b(var)\\b\\s+[A-Za-z_$][\\w$]*\\s*(=|:|;))",
+      "end": "(?=\\=|:|;)",
+      "name": "meta.definition.variable.local.jimple",
+      "patterns": [
+        {
+          "match": "\\bvar\\b",
+          "name": "storage.type.local.jimple"
+        },
+        {
+          "match": "([A-Za-z$_][\\w$]*)(?=\\s*(\\[\\])*\\s*(=|:|;))",
+          "captures": {
+            "1": {
+              "name": "variable.other.definition.jimple"
+            }
+          }
+        },
+        {
+          "include": "#code"
+        }
+      ]
+    }
+  }
+}

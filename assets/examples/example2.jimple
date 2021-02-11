@@ -1,0 +1,127 @@
+public abstract class android.support.v4.app.INotificationSideChannel$Stub extends android.os.Binder implements android.support.v4.app.INotificationSideChannel
+{
+    private static final java.lang.String DESCRIPTOR;
+    static final int TRANSACTION_cancel;
+    static final int TRANSACTION_cancelAll;
+    static final int TRANSACTION_notify;
+
+    public void <init>()
+    {
+        android.support.v4.app.INotificationSideChannel$Stub r0;
+
+        r0 := @this: android.support.v4.app.INotificationSideChannel$Stub;
+
+        r0.<android.os.Binder: void <init>()>();
+
+        r0.<android.support.v4.app.INotificationSideChannel$Stub: void attachInterface(android.os.IInterface,java.lang.String)>(r0, "android.support.v4.app.INotificationSideChannel");
+
+        return;
+    }
+
+    public static android.support.v4.app.INotificationSideChannel asInterface(android.os.IBinder)
+    {
+        android.os.IBinder $r0;
+        android.os.IInterface $r1;
+
+        $r0 := @parameter0: android.os.IBinder;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = $r0.<android.os.IBinder: android.os.IInterface queryLocalInterface(java.lang.String)>("android.support.v4.app.INotificationSideChannel");
+
+        if $r1 == null goto label2;
+
+        if $r1 instanceof android.support.v4.app.INotificationSideChannel == 0 goto label2;
+
+        return (android.support.v4.app.INotificationSideChannel) $r1;
+
+     label2:
+        return new android.support.v4.app.INotificationSideChannel$Stub$Proxy($r0);
+    }
+
+    public android.os.IBinder asBinder()
+    {
+        android.support.v4.app.INotificationSideChannel$Stub r0;
+
+        r0 := @this: android.support.v4.app.INotificationSideChannel$Stub;
+
+        return r0;
+    }
+
+    public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException
+    {
+        android.support.v4.app.INotificationSideChannel$Stub r0;
+        int $i0, $i1;
+        android.os.Parcel $r1, $r2;
+        java.lang.String $r3, $r4;
+        android.os.Parcelable$Creator r5;
+        android.app.Notification r7;
+
+        r0 := @this: android.support.v4.app.INotificationSideChannel$Stub;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Parcel;
+
+        $r2 := @parameter2: android.os.Parcel;
+
+        $i1 := @parameter3: int;
+
+        if $i0 == 1 goto label4;
+
+        if $i0 == 2 goto label3;
+
+        if $i0 == 3 goto label2;
+
+        if $i0 == 1598968902 goto label1;
+
+        return r0.<android.os.Binder: boolean onTransact(int,android.os.Parcel,android.os.Parcel,int)>($i0, $r1, $r2, $i1);
+
+     label1:
+        $r2.<android.os.Parcel: void writeString(java.lang.String)>("android.support.v4.app.INotificationSideChannel");
+
+        return 1;
+
+     label2:
+        $r1.<android.os.Parcel: void enforceInterface(java.lang.String)>("android.support.v4.app.INotificationSideChannel");
+
+        r0.<android.support.v4.app.INotificationSideChannel$Stub: void cancelAll(java.lang.String)>($r1.<android.os.Parcel: java.lang.String readString()>());
+
+        return 1;
+
+     label3:
+        $r1.<android.os.Parcel: void enforceInterface(java.lang.String)>("android.support.v4.app.INotificationSideChannel");
+
+        r0.<android.support.v4.app.INotificationSideChannel$Stub: void cancel(java.lang.String,int,java.lang.String)>($r1.<android.os.Parcel: java.lang.String readString()>(), $r1.<android.os.Parcel: int readInt()>(), $r1.<android.os.Parcel: java.lang.String readString()>());
+
+        return 1;
+
+     label4:
+        $r1.<android.os.Parcel: void enforceInterface(java.lang.String)>("android.support.v4.app.INotificationSideChannel");
+
+        $r3 = $r1.<android.os.Parcel: java.lang.String readString()>();
+
+        $i0 = $r1.<android.os.Parcel: int readInt()>();
+
+        $r4 = $r1.<android.os.Parcel: java.lang.String readString()>();
+
+        if $r1.<android.os.Parcel: int readInt()>() == 0 goto label5;
+
+        r5 = <android.app.Notification: android.os.Parcelable$Creator CREATOR>;
+
+        r7 = (android.app.Notification) r5.<android.os.Parcelable$Creator: java.lang.Object createFromParcel(android.os.Parcel)>($r1);
+
+        goto label6;
+
+     label5:
+        r7 = null;
+
+     label6:
+        r0.<android.support.v4.app.INotificationSideChannel$Stub: void notify(java.lang.String,int,java.lang.String,android.app.Notification)>($r3, $i0, $r4, r7);
+
+        return 1;
+    }
+}
