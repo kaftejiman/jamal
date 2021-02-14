@@ -1,8 +1,9 @@
 {
-  "name": "jamal",
+  	"name": "jamal",
+	"extensionDependencies": ["tintinweb.graphviz-interactive-preview"],
 	"displayName": "jamal",
 	"description": "Extension for aiding in android mobile analysis.",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"icon": "assets/icon.png",
 	"license": "See license in LICENSE.md",
 	"engines": {
@@ -15,11 +16,11 @@
 		"Other"
 	],
 	"activationEvents": [
+		"onLanguage:soot",
 		"onCommand:jamal.runAnalysis",
-		"onCommand:jamal.previewcfg",
-		"onCommand:jamal.previewdfg"
+		"onCommand:jamal.previewcfg"
 	],
-	"main": "./extension.js",
+	"main": "./src/extension.js",
 	"contributes": {
 		"languages": [
 			{
@@ -44,10 +45,6 @@
 			{
 				"command": "jamal.previewcfg",
 				"title": "Open CFG Preview to the side"
-			},
-			{
-				"command": "jamal.previewdfg",
-				"title": "Open DFG Preview to the side"
 			}
 		],
 		"menus": {
@@ -61,21 +58,12 @@
 				"group": "navigation@1",
 				"when": "resourceExtname == .jimple || resourceExtname == .grimple"
 				
-			},{
-				"command": "jamal.previewdfg",
-				"group": "navigation@2",
-				"when": "resourceExtname == .jimple || resourceExtname == .grimple"
 			}]
 		},
 		"configuration":[
 			{
 				"title": "Jamal",
 				"properties": {
-					"conf.soot.binary.path":{
-						"type":"string",
-						"description": "Path for Soot binary file",
-						"default":"C:\\Users\\kaftejiman\\mobile_research\\soot-4.2.1-jar-with-dependencies.jar"
-					},
 					"conf.java.binary.path":{
 						"type":"string",
 						"description": "Path for java binary",
@@ -90,14 +78,13 @@
 						"type":"string",
 						"description": "Path to the android platforms summaries",
 						"default":"C:\\Users\\kaftejiman\\mobile_research\\android-platforms"
-					}
-					
+					}				
 				}
 			}
 		]
 	},
 	"scripts": {
-		"lint": "eslint .",
+		"lint": "eslint src/",
 		"pretest": "yarn run lint",
 		"test": "node ./test/runTest.js"
 	},

@@ -15,7 +15,7 @@ public class AutoIncrementSample extends java.lang.Object
         java.io.PrintStream $r0;
         AutoIncrementSample r1;
         int i1;
-
+        
         r1 := @this: AutoIncrementSample;
         i1 = 1 + 1;
         $r0 = <java.lang.System: java.io.PrintStream out>;
