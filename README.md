@@ -66,13 +66,5 @@ You can execute it by entering the following command at the command palette Ctrl
 
 ## Release Notes
 
-### 0.1.1
-
-* Added limited support for CFG navigation (still needs work)
-* Included slightly modified soot component
-* Added very basic semantics/symbols providers
-  
-### 0.1.0
-
-* Initial release of Jamal as an MVP (minimal viable product)
+**[CHANGELOG](./CHANGELOG.md)**
 

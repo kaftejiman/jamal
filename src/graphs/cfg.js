@@ -24,11 +24,12 @@ function drawGraph(commands) {
         } else {
             dotFile = ''
         }
-        console.log(dotFile);
+        //console.log(dotFile);
         let args = {
             document: document,
             content:  fs.readFileSync(dotFile, {encoding:'utf8', flag:'r'}), 
-            callback: function(){}
+            allowMultiplePanels: true,
+            callback: function () {},
         };
         
         vscode.commands.executeCommand("graphviz-interactive-preview.preview.beside", args);
