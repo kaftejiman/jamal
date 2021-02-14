@@ -1,6 +1,6 @@
 # Jamal (Just Another Mobile Analysis Layer)
 
-Visual Studio Code extension for aiding in android mobile analysis.
+Visual Studio Code extension for aiding in android mobile application analysis.
 
 Jamal is mainly a wrapper around a *slightly* modified [Soot Framework](https://github.com/soot-oss/soot) with extra rendering for recovering Control Flow.
 

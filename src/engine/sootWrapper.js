@@ -5,10 +5,6 @@ const java = vscode.workspace.getConfiguration().get('conf.java.binary.path');
 const android_path = vscode.workspace.getConfiguration().get('conf.android.platforms.path');
 const memLimit = vscode.workspace.getConfiguration().get('conf.java.memory.limit');
 
-// organize files
-// 3d dot preview
-// organize some more
-// publish
 
 function runAnalysis(apk) {
     
