@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added limited support for CFG navigation (still needs work)
 * Included slightly modified soot component
+* Added very basic semantics/symbols providers
 ## [0.1.0] - 11/02/2021
 
 * Initial release

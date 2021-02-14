@@ -23,7 +23,7 @@ Given an android application `APK file`, Jamal aids in decompilation and static 
 
 ## Features
 
-### Syntactic support for Soot IR
+### Syntactic and Semantic support for Soot IR
 
 ![grammar](assets/sootIR_jimple_syntax.png)
 
@@ -70,6 +70,7 @@ You can execute it by entering the following command at the command palette Ctrl
 
 * Added limited support for CFG navigation (still needs work)
 * Included slightly modified soot component
+* Added very basic semantics/symbols providers
   
 ### 0.1.0
 
