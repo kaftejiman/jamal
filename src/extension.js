@@ -2,41 +2,35 @@ const vscode = require('vscode');
 const engine = require('./engine/sootWrapper');
 const pSymbols = require('./providers/symbolsProvider');
 const pSemantics = require('./providers/semanticProvider');
-const graphs = require('./graphs/cfg')
+const graphs = require('./graphs/cfg');
+const utils = require('./utils');
+const constants = require('./constants');
 
-async function activate(context) {
+function activate(context) {
 	
+	// setup output
+	utils.output.show();
+	utils.output.append(constants.REQUIRED_COOL_BANNER);
 
-	// init
+	// run required sanity checks
+	utils.sanityChecks();
 	
+	// register providers
 	let smProvider = pSemantics.registerSemanticProvider();
 	let syProvider = pSymbols.registerSymbolsProvider();
 
+	// register CFG preview component
 	let cfg = vscode.commands.registerCommand('jamal.previewcfg',function (){
-		graphs.drawGraph(vscode.commands);
+		graphs.drawGraph();
 	});
 
-	let dfg = vscode.commands.registerCommand('jamal.previewdfg',function (){
-		// todo
+	// register engine analyzer component
+	let analysis = vscode.commands.registerCommand('jamal.runAnalysis', async (folder) => {	
+		engine.runAnalysis(folder);
 	});
-
-	let analysis = vscode.commands.registerCommand('jamal.runAnalysis', async (folder) => {
-
-		vscode.window.showInformationMessage('Running..');
-		let newUri = folder;
-		if (!folder) {                      
-			await vscode.commands.executeCommand('copyFilePath');
-			folder = await vscode.env.clipboard.readText();  
-			newUri = vscode.Uri.file(folder);
-		}
-		
-		engine.runAnalysis(newUri.fsPath);
-		
-	});
-
-	context.subscriptions.push(cfg,dfg,analysis,smProvider,syProvider);
+	
+	context.subscriptions.push(cfg, analysis, smProvider, syProvider);
 }
-
 
 function deactivate() {}
 

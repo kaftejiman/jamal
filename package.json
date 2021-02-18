@@ -1,103 +1,156 @@
 {
   	"name": "jamal",
-	"extensionDependencies": ["tintinweb.graphviz-interactive-preview"],
-	"displayName": "jamal",
-	"description": "Extension for aiding in android mobile analysis.",
-	"version": "0.1.1",
-	"icon": "assets/icon.png",
-	"license": "See license in LICENSE.md",
-	"engines": {
-		"vscode": "^1.52.0"
-	},
-	"categories": [
-		"Programming Languages",
-		"Formatters",
-		"Snippets",
-		"Other"
-	],
-	"activationEvents": [
-		"onLanguage:soot",
-		"onCommand:jamal.runAnalysis",
-		"onCommand:jamal.previewcfg"
-	],
-	"main": "./src/extension.js",
-	"contributes": {
-		"languages": [
-			{
-				"id": "soot",
-				"aliases": ["Soot IR", "Jimple","Grimple","Dava","Jasmin"],
-				"extensions": [".jimple",".grimple",".dava",".jasmin"],
-				"configuration": "./language-configuration.json"
-        	}
-		],
-    	"grammars": [
-			{
-            	"language": "soot",
-            	"scopeName": "source.jimple",
-            	"path": "./syntaxes/jimple.tmLanguage.json"
-    	   	}
-		],
-		"commands": [
-			{
-				"command": "jamal.runAnalysis",
-				"title": "JAMAL: Run Analysis"
-			},
-			{
-				"command": "jamal.previewcfg",
-				"title": "Open CFG Preview to the side"
-			}
-		],
-		"menus": {
-			"explorer/context": [{
-				"when": "resourceExtname == .apk",
-				"command":"jamal.runAnalysis",
-				"group": "navigation@+1"
-			}],
-			"editor/context": [{
-				"command": "jamal.previewcfg",
-				"group": "navigation@1",
-				"when": "resourceExtname == .jimple || resourceExtname == .grimple"
-				
-			}]
-		},
-		"configuration":[
-			{
-				"title": "Jamal",
-				"properties": {
-					"conf.java.binary.path":{
-						"type":"string",
-						"description": "Path for java binary",
-						"default":"C:\\Program Files\\AdoptOpenJDK\\jre-15.0.2.7-hotspot\\bin\\java.exe"
-					},
-					"conf.java.memory.limit":{
-						"type":"string",
-						"description": "Maximum memory allocated to the JVM for soot analysis.",
-						"default": "2G"
-					},
-					"conf.android.platforms.path":{
-						"type":"string",
-						"description": "Path to the android platforms summaries",
-						"default":"C:\\Users\\kaftejiman\\mobile_research\\android-platforms"
-					}				
-				}
-			}
-		]
-	},
-	"scripts": {
-		"lint": "eslint src/",
-		"pretest": "yarn run lint",
-		"test": "node ./test/runTest.js"
-	},
-	"devDependencies": {
-        "@types/vscode": "^1.52.0",
-        "@types/glob": "^7.1.3",
-        "@types/mocha": "^8.0.4",
-        "@types/node": "^12.11.7",
-        "eslint": "^7.15.0",
-        "glob": "^7.1.6",
-        "mocha": "^8.1.3",
-        "typescript": "^4.1.2",
-        "vscode-test": "^1.4.1"
-    }
-
+  	"extensionDependencies": [
+  	  	"tintinweb.graphviz-interactive-preview"
+  	],
+  	"displayName": "Jamal",
+  	"description": "Android applications binary analysis framework.",
+  	"version": "0.3.0",
+  	"icon": "https://raw.githubusercontent.com/kaftejiman/jamal/main/assets/icon.png",
+  	"license": "See license in LICENSE.md",
+  	"publisher": "kaftejiman",
+  	"engines": {
+  	  	"vscode": "^1.52.0"
+  	},
+  	"categories": [
+  	  	"Programming Languages",
+  	  	"Formatters",
+  	  	"Snippets",
+  	  	"Other"
+  	],
+  	"activationEvents": [
+  	  	"onLanguage:soot",
+  	  	"onCommand:jamal.runAnalysis",
+  	  	"onCommand:jamal.previewcfg"
+  	],
+  	"main": "./src/extension.js",
+  	"contributes": {
+  	  	"languages": [
+  	  	  	{
+  	  	  	  	"id": "soot",
+  	  	  	  	"aliases": [
+  	  	  	  	  	"Soot IR",
+  	  	  	  	  	"Jimple",
+  	  	  	  	  	"Grimple"
+  	  	  	  	],
+  	  	  	  	"extensions": [
+  	  	  	  	  	".jimple",
+  	  	  	  	  	".grimple"
+  	  	  	  	],
+  	  	  	  	"configuration": "./language-configuration.json"
+  	  	  	},
+  	  	  	{
+  	  	  	  	"id": "soot-dava",
+  	  	  	  	"aliases": [
+  	  	  	  	  	"Dava"
+  	  	  	  	],
+  	  	  	  	"extensions": [
+  	  	  	  	  	".dava"
+  	  	  	  	],
+  	  	  	  	"configuration": "./language-configuration.json"
+  	  	  	},
+  	  	  	{
+  	  	  	  	"id": "soot-jasmin",
+  	  	  	  	"aliases": [
+  	  	  	  	  	"Jasmin"
+  	  	  	  	],
+  	  	  	  	"extensions": [
+  	  	  	  	  	".jasmin"
+  	  	  	  	],
+  	  	  	  	"configuration": "./language-configuration.json"
+  	  	  	}
+  	  	],
+  	  	"grammars": [
+  	  	  	{
+  	  	  	  	"language": "soot",
+  	  	  	  	"scopeName": "source.jimple",
+  	  	  	  	"path": "./syntaxes/jimple.tmLanguage.json"
+  	  	  	},
+  	  	  	{
+  	  	  	  	"language": "soot-dava",
+  	  	  	  	"scopeName": "source.dava",
+  	  	  	  	"path": "./syntaxes/dava.tmLanguage.json"
+  	  	  	},
+  	  	  	{
+  	  	  	  	"language": "soot-jasmin",
+  	  	  	  	"scopeName": "source.jasmin",
+  	  	  	  	"path": "./syntaxes/jasmin.tmLanguage.json"
+  	  	  	}
+  	  	],
+  	  	"commands": [
+  	  	  	{
+  	  	  	  	"command": "jamal.runAnalysis",
+  	  	  	  	"title": "JAMAL: Run Analysis"
+  	  	  	},
+  	  	  	{
+  	  	  	  	"command": "jamal.previewcfg",
+  	  	  	  	"title": "Open CFG Preview to the side"
+  	  	  	}
+  	  	],
+  	  	"menus": {
+  	  	  	"explorer/context": [
+  	  	  	  	{
+  	  	  	  	  	"when": "resourceExtname == .apk",
+  	  	  	  	  	"command": "jamal.runAnalysis",
+  	  	  	  	  	"group": "navigation@+1"
+  	  	  	  	}
+  	  	  	],
+  	  	  	"editor/context": [
+  	  	  	  	{
+  	  	  	  	  	"command": "jamal.previewcfg",
+  	  	  	  	  	"group": "navigation@1",
+  	  	  	  	  	"when": "resourceExtname == .jimple || resourceExtname == .grimple"
+  	  	  	  	}
+  	  	  	]
+  	  	},
+  	  	"configuration": [
+  	  	  	{
+  	  	  	  	"title": "Jamal",
+  	  	  	  	"properties": {
+  	  	  	  	  	"conf.java.binary.path": {
+  	  	  	  	  	  	"type": "string",
+  	  	  	  	  	  	"description": "Path to java binary",
+  	  	  	  	  	  	"default": ""
+  	  	  	  	  	},
+  	  	  	  	  	"conf.java.memory.limit": {
+  	  	  	  	  	  	"type": "string",
+  	  	  	  	  	  	"description": "Maximum memory allocated to the JVM for analysis, the higher the better",
+  	  	  	  	  	  	"default": "2G"
+  	  	  	  	  	},
+  	  	  	  	  	"conf.android.platforms.path": {
+  	  	  	  	  	  	"type": "string",
+  	  	  	  	  	  	"description": "Path to the android platforms summaries",
+  	  	  	  	  	  	"default": ""
+  	  	  	  	  	},
+  	  	  	  	  	"conf.engine.deps.path": {
+  	  	  	  	  	  	"type": "string",
+  	  	  	  	  	  	"description": "Path to the engine dependencies folder",
+  	  	  	  	  	  	"default": ""
+  	  	  	  	  	}
+  	  	  	  	}
+  	  	  	}
+  	  	]
+  	},
+  	"scripts": {
+  	  	"lint": "eslint src/",
+  	  	"pretest": "yarn run lint",
+  	  	"test": "node ./test/runTest.js"
+  	},
+  	"devDependencies": {
+  	  	"@types/glob": "^7.1.3",
+  	  	"@types/mocha": "^8.0.4",
+  	  	"@types/node": "^12.11.7",
+  	  	"@types/vscode": "^1.52.0",
+  	  	"eslint": "^7.15.0",
+  	  	"glob": "^7.1.6",
+  	  	"mocha": "^8.1.3",
+  	  	"typescript": "^4.1.2",
+  	  	"vscode-test": "^1.4.1"
+  	},
+  	"dependencies": {
+  	  	"@particle/fetch-file": "^2.0.1",
+  	  	"decompress": "^4.2.1",
+  	  	"node-stream-zip": "^1.13.1",
+  	  	"xml2js": "^0.4.23"
+  	}
 }

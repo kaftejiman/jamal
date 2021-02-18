@@ -1,4 +1,4 @@
-# Jamal (Just Another Mobile Analysis Layer)
+# Jamal
 
 Visual Studio Code extension for aiding in android mobile application analysis.
 
@@ -8,9 +8,13 @@ Given an android application `APK file`, Jamal aids in decompilation and static 
 
 *Please report any bugs you encounter.*
 
+## Overview
+
+![overview](assets/overview.png)
+
 ## Architecture
 
-![architecture](assets/architecture.drawio.svg)
+![architecture](assets/architecture.png)
 
 ## Quick Start
 
@@ -23,13 +27,13 @@ Given an android application `APK file`, Jamal aids in decompilation and static 
 
 ## Features
 
+### Dynamic Control Flow Graph inspection 
+
+![grammar](assets/cfg.png)
+
 ### Syntactic and Semantic support for Soot IR
 
 ![grammar](assets/sootIR_jimple_syntax.png)
-
-### Dynamic Control Flow inspection 
-
-![grammar](assets/cfg.png)
 
 ### Graphviz Dot Representation 
 
@@ -47,22 +51,6 @@ Jamal depends on:
 * [Java](https://www.oracle.com/java/technologies/javase/jdk15-archive-downloads.html)
 * [Android Platforms](https://github.com/Sable/android-platforms)
 * [tintinweb Interactive Graphviz](https://github.com/tintinweb/vscode-interactive-graphviz)
-
-## Extension Settings
-
-This extension contributes the following settings:
-
-You can execute it by entering the following command at the command palette Ctrl+Shift+P (Cmd+Shift+P on MacOS).
-
-|            Name             |                      Description                       |
-| :-------------------------: | :----------------------------------------------------: |
-|    conf.java.binary.path    |              Path to the java executable.              |
-|   conf.java.memory.limit    | Maximum memory allocated to the JVM for soot analysis. |
-| conf.android.platforms.path |               Path to android platforms.               |
-
-
-* `explorer/context`: contributes jamal.runAnalysis, jamal.previewcfg.
-* `editor/context`  : contributes jamal.previewcfg.
 
 ## Release Notes
 
