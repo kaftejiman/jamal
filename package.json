@@ -7,9 +7,11 @@
   	"description": "Android applications binary analysis framework.",
   	"version": "0.3.0",
   	"icon": "icon.png",
-  	"license": "See lic`ense in LICENSE.md",
+  	"license": "See license in LICENSE.md",
   	"publisher": "kaftejiman",
   	"repository": "https://github.com/kaftejiman/jamal",
+	"keywords": ["Android","APK", "Mobile", "Decompiler", "Reverse Engineering"],
+	
   	"engines": {
   	  	"vscode": "^1.52.0"
   	},
