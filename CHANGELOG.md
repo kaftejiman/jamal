@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [0.3.0] - 15/02/2021
 
-* Major refactoring. (started learning NodeJS Promises)
+* Major refactoring. (cant get my head around Promises, but trying)
 * Auto setup of android, soot and java components at extension initialization.
 * Summary generation upon completion.
 * Auto extraction of native libs for later inspection.
