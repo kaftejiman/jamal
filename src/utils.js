@@ -19,7 +19,7 @@ const toolsPath = __dirname + p.sep + 'tools';
 const depsPath = __dirname + p.sep + 'engine' + p.sep + 'deps';
 let ext = '';
 const output = vscode.window.createOutputChannel("Jamal");
-
+let toggler = false;
 
 // setup global os agnostic configs
 if (os.platform() === "win32") {
@@ -28,6 +28,12 @@ if (os.platform() === "win32") {
     ext = '';
 } else {
     ext = null;
+}
+
+// like an interrupter switchs on to off and vice versa
+function toggle() {
+    if (toggler == true) toggler = false;
+    else toggler = true;
 }
 
 // file exists and accessible?
@@ -300,7 +306,6 @@ async function ensureJava() {
                         file = `java-win-32.zip`;
                         break;
                     default:
-                        output.appendLine(os.arch());
                         break;
                 }
                 break;
@@ -365,6 +370,14 @@ async function ensureEngine() {
 
 async function sanityChecks(){
     
+
+
+    if (toggler == true) {
+        vscode.window.showInformationMessage(constants.SETUP_COMPLETE);
+        output.appendLine("[+] Setup complete, please run analysis again");
+        toggle()
+    }
+
     if (needSetup()) {
         output.append('[*] Setting up, upon installation VS Code will restart..\n');
         vscode.window.showInformationMessage(constants.DOWNLOAD_MISSING_COMPONENT);
@@ -373,10 +386,9 @@ async function sanityChecks(){
         await ensureEngine();
         await ensureAndroids();
         
-        
+        toggle();
         vscode.commands.executeCommand("workbench.action.reloadWindow");
-        vscode.window.showInformationMessage(constants.SETUP_COMPLETE);
-        output.appendLine("[+] Setup complete");
+
     }
 }
 

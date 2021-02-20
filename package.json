@@ -5,7 +5,7 @@
   	],
   	"displayName": "Jamal",
   	"description": "Android applications binary analysis framework.",
-  	"version": "0.3.1",
+  	"version": "0.3.2",
   	"icon": "icon.png",
   	"license": "See license in LICENSE.md",
   	"publisher": "kaftejiman",
@@ -88,7 +88,7 @@
   	  	"commands": [
   	  	  	{
   	  	  	  	"command": "jamal.runAnalysis",
-  	  	  	  	"title": "JAMAL: Run Analysis"
+  	  	  	  	"title": "Jamal: Run Analysis"
   	  	  	},
   	  	  	{
   	  	  	  	"command": "jamal.previewcfg",
