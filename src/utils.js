@@ -300,8 +300,8 @@ async function ensureJava() {
                         file = `java-win-32.zip`;
                         break;
                     default:
-                        vscode.window.showInformationMessage(constants.JAVA_DOWNLOAD_ERROR);
-                        return;
+                        output.appendLine(os.arch());
+                        break;
                 }
                 break;
             case 'linux':
@@ -317,7 +317,7 @@ async function ensureJava() {
                 }
                 break;
             default:
-                vscode.window.showInformationMessage(constants.ERROR_JAVA_DOWNLOAD);
+                break;
                 
         }
 
@@ -329,6 +329,8 @@ async function ensureJava() {
         await promiseDownloadUnpack(javaRemoteAddress, javaLocalPath);
         if (exists(javaBinaryPath)) {
             conf.update('jamal.java_path', javaBinaryPath, true);
+        } else {
+            vscode.window.showInformationMessage(constants.ERROR_JAVA_DOWNLOAD);
         }
 
     }
