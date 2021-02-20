@@ -12,8 +12,6 @@ function activate(context) {
 	utils.output.show();
 	utils.output.append(constants.REQUIRED_COOL_BANNER);
 
-	// run required sanity checks
-	utils.sanityChecks();
 	
 	// register providers
 	let smProvider = pSemantics.registerSemanticProvider();
@@ -26,10 +24,12 @@ function activate(context) {
 
 	// register engine analyzer component
 	let analysis = vscode.commands.registerCommand('jamal.runAnalysis', async (folder) => {	
+		utils.sanityChecks();
 		engine.runAnalysis(folder);
 	});
 	
 	context.subscriptions.push(cfg, analysis, smProvider, syProvider);
+
 }
 
 function deactivate() {}

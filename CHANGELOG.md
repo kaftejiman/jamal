@@ -6,12 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### [0.3.0] - 15/02/2021
 
-* major refactoring. (started learning NodeJS Promises)
-* auto setup of android, soot and java components at extension initialization.
+* Major refactoring. (started learning NodeJS Promises)
+* Auto setup of android, soot and java components at extension initialization.
 * Summary generation upon completion.
 * Auto extraction of native libs for later inspection.
-* support for multiple graph previews [PR13](https://github.com/tintinweb/vscode-interactive-graphviz/pull/13).
-* support more of Soot IR representations (dava, jasmin).
+* Support for multiple graph previews [PR13](https://github.com/tintinweb/vscode-interactive-graphviz/pull/13).
+* Support more of Soot IR representations (dava, jasmin).
 
 ### [0.2.0] - 14/02/2021
 

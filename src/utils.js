@@ -9,16 +9,16 @@ const decompress = require('decompress');
 const StreamZip = require('node-stream-zip');
 const cp = require('child_process');
 let conf = vscode.workspace.getConfiguration();
-let javaPath = conf.get('conf.java.binary.path');
-let androidPath = conf.get('conf.android.platforms.path');
-let engineClasspathPath = conf.get("conf.engine.deps.path");
+let javaPath = conf.get('jamal.java_path');
+let androidPath = conf.get('jamal.androids_path');
+let engineClasspathPath = conf.get("jamal.deps_path");
+let memLimit = conf.get('jamal.java_memory_limit');
 const androidPath_ = __dirname + p.sep + 'engine' + p.sep + 'android-platforms';
-let memLimit = conf.get('conf.java.memory.limit');
 const enginePath = __dirname + p.sep + 'engine';
 const toolsPath = __dirname + p.sep + 'tools';
 const depsPath = __dirname + p.sep + 'engine' + p.sep + 'deps';
 let ext = '';
-let output = vscode.window.createOutputChannel("Jamal");
+const output = vscode.window.createOutputChannel("Jamal");
 
 
 // setup global os agnostic configs
@@ -30,14 +30,42 @@ if (os.platform() === "win32") {
     ext = null;
 }
 
+// file exists and accessible?
+function exists(file) {
+    try {
+        fs.accessSync(file, fs.constants.R_OK | fs.constants.W_OK);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+function makeFile(file, content, callback) {
+    fs.writeFile(file, content, callback);
+}
+
+function makeFolder(dir){
+    if (fs.existsSync(dir))
+        return;
+    if (!fs.existsSync(p.dirname(dir))) {
+        this.makeDirSync(p.dirname(dir));
+    }
+    fs.mkdirSync(dir);
+}
+
 function needSetup() {
     
-    javaPath = conf.get('conf.java.binary.path');
-    androidPath = conf.get('conf.android.platforms.path');
-    engineClasspathPath = conf.get("conf.engine.deps.path");
     
-    if (javaPath == '' || androidPath == '' || engineClasspathPath == '')
-        return true;
+    javaPath = conf.get('jamal.java_path');
+    androidPath = conf.get('jamal.androids_path');
+    engineClasspathPath = conf.get("jamal.deps_path");
+    
+    if ((javaPath == undefined || androidPath == undefined || engineClasspathPath == undefined) ||
+        (javaPath == '' || androidPath == '' || engineClasspathPath == '') ||
+        (!fs.existsSync(javaPath) || !fs.existsSync(androidPath) || !fs.existsSync(engineClasspathPath))) {
+            return true;
+        }
+
     return false;
 }
 
@@ -62,16 +90,10 @@ function returnFunctionSignature(document,ln) {
 }
 
 function getShaSum(filename) {
-    let algorithm = 'sha1';
-    let shasum = crypto.createHash(algorithm);
-    s = fs.ReadStream(filename)
-    s.on('data', function(data) {
-        shasum.update(data)
-    })
-    s.on('end', function() {
-        var hash = shasum.digest('hex');
-        return hash;
-    })
+    let shasum = crypto.createHash('sha256');
+    let data = fs.readFileSync(filename);
+    shasum.update(data);
+    return shasum.digest('hex');
 }
 
 function getFilesizeInMegaBytes(filename) {
@@ -99,28 +121,28 @@ function getProjectLibs() {
     let curr = vscode.workspace.getWorkspaceFolder(
         vscode.workspace.workspaceFolders[0].uri,
     ).uri;
-    return vscode.Uri.joinPath(curr, p.sep + 'jamalOutput' + p.sep + 'libs').fsPath;
+    return vscode.Uri.joinPath(curr,'jamalOutput','libs').fsPath;
 }
 
 function getProjectTaint() {
     let curr = vscode.workspace.getWorkspaceFolder(
         vscode.workspace.workspaceFolders[0].uri,
     ).uri;
-    return vscode.Uri.joinPath(curr, p.sep + 'jamalOutput' + p.sep + 'taint_analysis').fsPath;
+    return vscode.Uri.joinPath(curr,'jamalOutput','taint_analysis').fsPath;
 }
 
 function getProjectDebug() {
     let curr = vscode.workspace.getWorkspaceFolder(
         vscode.workspace.workspaceFolders[0].uri,
     ).uri;
-    return vscode.Uri.joinPath(curr, p.sep + 'jamalOutput' + p.sep + 'debug').fsPath;
+    return vscode.Uri.joinPath(curr, 'jamalOutput','debug').fsPath;
 }
 
 function getProjectDots() {
     let curr = vscode.workspace.getWorkspaceFolder(
         vscode.workspace.workspaceFolders[0].uri,
     ).uri;
-    return vscode.Uri.joinPath(curr, p.sep + 'jamalOutput' + p.sep + 'dots' ).fsPath;
+    return vscode.Uri.joinPath(curr,'jamalOutput','dots' ).fsPath;
 }
 
 function getProjectTools() {
@@ -144,7 +166,7 @@ function getTimeNow() {
 
 function parseLibs(apk, outFolder) {
     
-    files = getFilesInDir(getProjectLibs());
+    let files = getFilesInDir(getProjectLibs());
     files.forEach(element => {
         // parse lib
     });
@@ -152,12 +174,13 @@ function parseLibs(apk, outFolder) {
 }
 
 async function extractLibs(apk) {
-    return new Promise(async () => {
+    return new Promise(async (resolve) => {
         
         makeFolder(getProjectLibs());
         const zip = new StreamZip.async({ file: apk });
         await zip.extract('lib/', getProjectLibs());
         await zip.close();
+        resolve();
     })
 }
 
@@ -214,7 +237,7 @@ function generateSummary(apk,outFolder) {
     ${date}
     Filename                   : ${sApk}
     File size                  : ${sSize} mb
-    md5sum                     : ${sSum}
+    shasum                     : ${sSum}
     Total parsed files         : ${sParsedF}
     Total decompiled functions : ${sDecFn} 
     ` //     Android Manifest Summary   : ${summaryManifest}
@@ -231,55 +254,42 @@ function generateSummary(apk,outFolder) {
     return;
 }
 
-
-// file exists and accessible?
-function exists(file) {
-    try {
-        fs.accessSync(file, fs.constants.R_OK | fs.constants.W_OK);
-        return true;
-    } catch (err) {
-        return false;
-    }
-}
-
-function makeFile(file, content, callback) {
-    fs.writeFile(file, content, callback);
-}
-
-function makeFolder(dir){
-    if (fs.existsSync(p.dirname(dir)))
-        return;
-    if (!fs.existsSync(p.dirname(dir))) {
-        this.makeDirSync(p.dirname(dir));
-    }
-    fs.mkdirSync(dir);
-}
-
-// for downloading missing components
+// downloader missing components
 // requirements: archive .zip
-const promiseDownloadUnpack = (url, dest) => {
-    return new Promise(() => {
+function promiseDownloadUnpack(url, dest){
+    return new Promise(async (resolve, failure) => {
         
         const onProgress = () => {
             output.append(".");
         }
         let component = p.basename(url);
         dest = dest + p.sep + component;
-        fetchFile(url, dest, { onProgress, interval: 4000 }).then(
-            () => {
-                decompress(dest, dest.replace('.zip', '')).then( () => {
-                    output.appendLine(`\n[*] Installed ${component.replace('.zip','')}`);
-                });
-            });
+        try {
+            await fetchFile(url, dest, { onProgress, interval: 4000 });
+            decompress(dest, dest.replace('.zip', '')).then(() => {
+            try {
+                output.appendLine(`\n[*] Installed ${component.replace('.zip', '')}`);
+                resolve();
+            }
+            catch (e) {
+                console.log(e);
+                failure();
+            }
+        });
+        } catch (error) {
+            failure();
+        }
+        
+
+                
     });
 }
 
-function ensureJava() {
-    if (javaPath == '') {
+async function ensureJava() {
+    if (javaPath == '' || javaPath == undefined || !fs.existsSync(javaPath)) {
             
-        // download java from kaftejiman repo according to current os configs
         let file = '';
-        vscode.window.showInformationMessage(constants.ERROR_JAVA_EXIST);
+        
         switch (os.platform()) {
             case 'win32':
                 switch (os.arch()) {
@@ -303,104 +313,68 @@ function ensureJava() {
                         file = `java-linux-32.zip`;
                         break;
                     default:
-                        vscode.window.showInformationMessage(constants.ERROR_JAVA_DOWNLOAD);
-                        return;
+                        break;
                 }
                 break;
             default:
                 vscode.window.showInformationMessage(constants.ERROR_JAVA_DOWNLOAD);
                 
         }
+
         let javaLocalPath = __dirname + p.sep + 'engine' + p.sep + 'java';
         let javaRemoteAddress = constants.JAVA_REMOTE_ADDRESS + file;
         let javaComponentName = p.basename(javaRemoteAddress).replace('.zip', '');
         let javaBinaryPath = __dirname + p.sep + 'engine' + p.sep + 'java' + p.sep + javaComponentName + p.sep + 'bin' + p.sep + 'java' + ext;
 
-        const promiseJavaFound = new Promise(() => {
-            if (exists(javaBinaryPath)) {
-                conf.update('conf.java.binary.path', javaBinaryPath);
-            } else {
-                vscode.window.showInformationMessage(constants.ERROR_JAVA_DOWNLOAD);
-            }
-        });
-
-        promiseDownloadUnpack(javaRemoteAddress, javaLocalPath).then(() => {
-            promiseJavaFound
-        });
+        await promiseDownloadUnpack(javaRemoteAddress, javaLocalPath);
+        if (exists(javaBinaryPath)) {
+            conf.update('jamal.java_path', javaBinaryPath, true);
+        }
 
     }
     
 }
 
-function ensureAndroids() {
-    if (androidPath == '') { 
-        vscode.window.showInformationMessage(constants.ERROR_ANDROID_EXIST);
+async function ensureAndroids() {
+    if (androidPath == '' || androidPath == undefined || !fs.existsSync(androidPath)) { 
 
-        const promiseAndroidFound = new Promise(() => {
+        await promiseDownloadUnpack(constants.ANDROID_REMOTE_ADDRESS, enginePath).then(() => {
             if (fs.existsSync(androidPath_)) {
-                conf.update('conf.android.platforms.path', androidPath_);
+                conf.update('jamal.androids_path', androidPath_, true);
             } else {
                 vscode.window.showInformationMessage(constants.ERROR_ANDROID_DOWNLOAD);
             }
         });
-        
-        promiseDownloadUnpack(constants.ANDROID_REMOTE_ADDRESS, enginePath).then(() => {
-            promiseAndroidFound
-        });
     }
 }
 
-function ensureEngine() {
-    if (engineClasspathPath == '') {   
-        vscode.window.showInformationMessage(constants.ERROR_ENGINE_EXIST);
+async function ensureEngine() {
+    if (engineClasspathPath == '' || engineClasspathPath == undefined || !fs.existsSync(engineClasspathPath)) {   
 
-        const promiseEngineFound = new Promise(() => {
-            if (fs.existsSync(depsPath)) {
-                conf.update('conf.engine.deps.path', depsPath);
-            } else {
-                vscode.window.showInformationMessage(constants.ERROR_ENGINE_DOWNLOAD);
-            }
-        });
-        
-        // constants.ANDROID_REMOTE_ADDRESS
-        promiseDownloadUnpack(constants.ENGINE_REMOTE_ADDRESS, enginePath).then(() => {
-            promiseEngineFound
-        });
+        await promiseDownloadUnpack(constants.ENGINE_REMOTE_ADDRESS, enginePath);
+        if (fs.existsSync(depsPath)) {
+            conf.update('jamal.deps_path', depsPath, true);
+        } else {
+            vscode.window.showInformationMessage(constants.ERROR_ENGINE_DOWNLOAD);
+            return;
+        }
     }
 }
 
-function sanityChecks(){
-        
-    let msg = '';
-
-    if (androidPath == '' && engineClasspathPath == '' && javaPath == '')
-        msg = constants.FIRST_TIME_SETUP;
-    if (androidPath == '' || engineClasspathPath == '' || javaPath == '')
-        msg = constants.DOWNLOAD_MISSING_COMPONENT;  
-
+async function sanityChecks(){
+    
     if (needSetup()) {
-        vscode.window.showInformationMessage(msg);
+        output.append('[*] Setting up, upon installation VS Code will restart..\n');
+        vscode.window.showInformationMessage(constants.DOWNLOAD_MISSING_COMPONENT);
         
-        const promiseEnsureJava = new Promise(() => {
-            ensureJava()
-        });
-        const promiseEnsureEngine = new Promise(() => {
-            ensureEngine();
-        });
-        const promiseEnsureAndroid = new Promise(() => {
-            ensureAndroids();
-        });
-
-        promiseEnsureJava.then(
-            promiseEnsureAndroid.then(
-                promiseEnsureEngine.then(() => {
-                        vscode.window.showInformationMessage(constants.SETUP_COMPLETE);
-                    }
-                )
-            )
-        );
-
-        output.append('[*] Setting up..');
+        await ensureJava();
+        await ensureEngine();
+        await ensureAndroids();
+        
+        
+        vscode.commands.executeCommand("workbench.action.reloadWindow");
+        vscode.window.showInformationMessage(constants.SETUP_COMPLETE);
+        output.appendLine("[+] Setup complete");
     }
 }
 

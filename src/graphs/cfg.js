@@ -8,7 +8,8 @@ function drawGraph() {
     if (!utils.needSetup()) {
         
         var editor = vscode.window.activeTextEditor;
-    
+        let dotFile = '';
+
         if (editor) {
             let pDots = utils.getProjectDots();
             if (!utils.exists(pDots)) {
@@ -27,7 +28,7 @@ function drawGraph() {
             } else {
                 dotFile = ''
             }
-            //output.appendLine(dotFile);
+            
             let args = {
                 document: document,
                 content: fs.readFileSync(dotFile, { encoding: 'utf8', flag: 'r' }),
