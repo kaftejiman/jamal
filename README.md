@@ -51,6 +51,7 @@ Jamal can run out of memory when analysing big APK files, please allocate more m
 ## Requirements
 
 Jamal depends on:
+* [Soot](https://github.com/soot-oss/soot)
 * [Java](https://www.oracle.com/java/technologies/javase/jdk15-archive-downloads.html)
 * [Android Platforms](https://github.com/Sable/android-platforms)
 * [tintinweb Interactive Graphviz](https://github.com/tintinweb/vscode-interactive-graphviz)
